@@ -2,3 +2,11 @@ Return all products where product name starts with 'A', 'B', .... 'F' ordered by
 
 | ProductId | ProductName | QuantityPerUnit |
 
+
+db.products.aggregate(
+    [
+        { $match: { ProductName: { $regex: /^[A-F]/ } } },
+        { $project: { ProductID: 1, ProductName: 1, QuantityPerUnit: 1 }},
+        { $sort: { ProductName: 1 } }
+    ]
+)
