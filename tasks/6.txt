@@ -1,3 +1,33 @@
 Create a query to return all products with category and supplier company names:
 
 | ProductName | CategoryName | SupplierCompanyName |
+
+db.products.aggregate([
+    {
+      $lookup:
+        {
+          from: "categories",
+          localField: "CategoryID",
+          foreignField: "CategoryID",
+          as: "categories_obj"
+        }        
+    },
+    { $unwind : "$categories_obj" },
+    
+        {
+      $lookup:
+        {
+          from: "suppliers",
+          localField: "SupplierID",
+          foreignField: "SupplierID",
+          as: "suppliers_obj"
+        }        
+    },
+    { $unwind : "$suppliers_obj" },
+    
+     { 
+         $project:{
+          _id: 0, ProductName:1, CategoryName: "$categories_obj.CategoryName",  SupplierCompanyName:"$suppliers_obj.CompanyName"          
+        }         
+    }      
+])
