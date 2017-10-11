@@ -8,7 +8,3 @@ Create a SQL query to return next data ordered by city and then by name:
 | Employy Id | Employee Full Name | Title | City |
 
 [Employee Full Name] - First Name and Last Name.
-
-db.employees.aggregate(
-    [{ $project: { EmployeeID: 1,"Employee Full Name": { $concat: [ "$FirstName", " ", "$LastName" ]}, Title: 1, City: { $ifNull: [ "$City", "-" ]}}},
-       { $sort: { City: 1, "Employee Full Name": 1}}]);
