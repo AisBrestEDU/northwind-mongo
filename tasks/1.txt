@@ -8,3 +8,11 @@ Create a SQL query to return next data ordered by city and then by name:
 | Employy Id | Employee Full Name | Title | City |
 
 [Employee Full Name] - First Name and Last Name.
+
+
+db.employees.aggregate(
+    [
+        { $project: { _id: 0, EmployeeID:1, EmployeeFullName: { $concat: [ "$FirstName", " ", "$LastName" ]}, Title:1, City:1}},
+        { $sort:{ City: 1, EmployeeFullName:1 }}
+    ]
+)
