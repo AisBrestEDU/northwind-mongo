@@ -10,5 +10,6 @@ db.getCollection('order-details').aggregate(
         OrderTotalPrice: { $sum: { $multiply: [ "$UnitPrice", "$Quantity" ] }}, 
         TotalOrderDiscount: { $sum: "$Discount" }} 
         },
+        {$sort: {_id: -1}}
    ]
 )
