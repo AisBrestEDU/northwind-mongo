@@ -6,11 +6,13 @@ Create a query to return a list ordered by order id descending:
 
 db.getCollection('order-details').aggregate(
     [
-        { $project: { 
-                        _id: 0, OrderID:1, 
-                        OrderTotalPrice: { $sum: {$multiply: [ "$Quantity", "$UnitPrice" ] }}, 
-                        TotalOrderDiscount: {$sum: "$Discount" }
-                    }
+        { 
+            $group: 
+                  { 
+                    _id: "$OrderID", 
+                    OrderTotalPrice: { $sum: {$multiply: [ "$Quantity", "$UnitPrice" ] }}, 
+                    TotalOrderDiscount: {$sum: "$Discount" }
+                  }
         },
         { $sort: { _id: -1 } }
     ]
