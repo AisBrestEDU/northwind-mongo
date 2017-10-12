@@ -3,6 +3,5 @@ Create a SQL query to find those customers whose contact name containing the 1st
 | CustomerId | ContactName |
 
 db.customers.aggregate(
-    [{$match: {ContactName: { $regex: '^F[a-z][a-z]n', $options: "i" }}},
-    {$project: {CustomerID: 1, ContactName: 1}}
-    ]);
+    [{$match: {ContactName: /^F[a-z][a-z]n/i}},
+    {$project: {CustomerID: 1, ContactName: 1}}]);
