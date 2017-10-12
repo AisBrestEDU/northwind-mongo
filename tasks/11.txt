@@ -1,3 +1,4 @@
 Create a SQL query to get Product list (name, unit price) where products cost between $5 and $15:
 
 | ProductName | UnitPrice |
+db.getCollection('products').find({UnitPrice:{$gte:5, $lte:15}},{ProductName:1, UnitPrice:1, _id:0})
