@@ -3,3 +3,5 @@ Write a SQL query to get Product list of twenty most expensive products:
 | ProductName | UnitPrice |
 
 Order products by price.
+
+db.getCollection('products').find({},{ProductName:1, UnitPrice:1, _id:0}).sort({UnitPrice:-1}).limit(12)
