@@ -1,2 +1,7 @@
 Write a query to get discontinued Product list:
 | ProductId | Name | 
+
+db.products.aggregate(
+    [{$match: {Discontinued: 1}},
+    {$project: {ProductID: 1, ProductName: 1}}
+    ]);
