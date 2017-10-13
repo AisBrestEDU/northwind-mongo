@@ -2,16 +2,15 @@ Create a query to return:
 
 | CategoryName | TotalNumberOfProducts |
 
-db.products.aggregate([
+db.categories.aggregate([
     {$lookup: 
         {
-          from: "categories",
+          from: "products",
           localField: "CategoryID",
           foreignField: "CategoryID",
-          as: "Category"
+          as: "Products"
         }},
-        {$unwind: "$Category"},
-        {$project: {CategoryName: "$Category.CategoryName"}},
+        {$unwind: "$Products"},
         {$group: {_id: "$CategoryName", TotalNumberOfProducts: {$sum: 1}}},
         {$project: {_id: 0, CategoryName: "$_id", TotalNumberOfProducts: "$TotalNumberOfProducts"}}
     ]);
