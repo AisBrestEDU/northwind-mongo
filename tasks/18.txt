@@ -3,32 +3,11 @@ Create a SQL query to calcualte total orders count by each day in 1998:
 | Order Date | Total Number of Orders |
 
 //task18
+
 db.orders.aggregate([
 {
-    $project: {
-    OrderDate: { $dateToString: { format: "%Y-%m-%d", date: "$OrderDate" } },
- }
+    $match: { OrderDate: {$gte: ISODate("1998-01-01T00:00:00.000Z"), $lt: ISODate("1999-01-01T00:00:00.000Z")} }
  },
-     { $match: {OrderDate: { $regex: /^1998/ }}},
-     { $group: { _id: "$OrderDate" , TotalNumberOfOrders : { $sum: 1 } } }
- ])
-
-
-
-
-//task18(2)
-db.orders.aggregate([
-{
-    $project: {
-      Year:  {"$year": "$OrderDate"} , 
-      Month : {"$month": "$OrderDate"},
-      Day: {"$dayOfMonth": "$OrderDate"},
-  }
- },
-     { $match: {Year: 1998 }},
-     { $group: { _id: {Month: "$Month", Day: "$Day"} , TotalNumberOfOrders : { $sum: 1 } } },     
-     { $sort: {_id:1}},
-     { $project: {
-      TotalNumberOfOrders:1}
-  }
+     { $group: { _id: "$OrderDate" , TotalNumberOfOrders : { $sum: 1 } } },
+     { $sort: {_id:1}}
  ])
