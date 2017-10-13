@@ -2,5 +2,21 @@ Create a query to return all customers from USA without Fax:
 
 | CustomerId | CompanyName |
 
-db.getCollection('customers').find({Fax:"NULL"},{_id:0, CustomerID:1, CompanyName:1})
+Fix db query:
+db.getCollection('customers').find({Fax:'NULL'}).forEach(customer=>{
+    customer.Fax = null
+    db.customers.save(customer)
+})
+db.getCollection('customers').find({Region:'NULL'}).forEach(customer=>{
+    customer.Region = null
+    db.customers.save(customer)
+})
+db.getCollection('customers').find({PostalCode:'NULL'}).forEach(customer=>{
+    customer.PostalCode = null
+    db.customers.save(customer)
+})
+
+
+Task query:
+db.getCollection('customers').find({Fax:null},{_id:0, CustomerID:1, CompanyName:1})
 
