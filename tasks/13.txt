@@ -1,3 +1,26 @@
 Create a SQL query to count current and discontinued products:
 
 | TotalOfCurrentProducts | TotalOfDiscontinuedProducts |
+
+db.products.aggregate([
+    {
+        $group: {
+            _id:1,
+            "TotalOfCurrentProducts": { 
+                "$sum": { 
+                    "$cond": [{ "$eq": [ "$Discontinued", 0 ] }, 1 , 0 ]
+                }
+            },
+            "TotalOfDiscontinuedProducts": { 
+                "$sum": { 
+                    "$cond": [{ "$eq": [ "$Discontinued", 1 ] }, 1, 0 ]
+                }
+            }
+        }
+    },
+    {
+        $project: {
+            _id:0
+        }
+    }
+])
