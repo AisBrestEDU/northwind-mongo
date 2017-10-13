@@ -4,7 +4,12 @@ Create a SQL query to calcualte total orders count by each day in 1998:
 
 //task18
 db.orders.aggregate([
+{
+    $project: {
+    OrderDate: { $dateToString: { format: "%Y-%m-%d", date: "$OrderDate" } },
+ }
+ },
      { $match: {OrderDate: { $regex: /^1998/ }}},
-     { $sort: {OrderDate:-1}},
      { $group: { _id: "$OrderDate" , TotalNumberOfOrders : { $sum: 1 } } }
  ])
+
