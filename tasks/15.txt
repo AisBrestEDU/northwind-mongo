@@ -1,3 +1,32 @@
 Create a SQL query to return the total number of orders for every month in 1997 year:
 
 | January | February | March | April | May | June | July | August | September | November | December |
+
+//task15
+db.orders.aggregate(
+   [
+    { $project: {
+     Year:  {"$year": "$OrderDate"} , 
+     Month : {"$month": "$OrderDate"}}
+     },
+    { $match: {Year: 1997}},
+    { $group:
+           {
+             _id:1,
+             January:{ $sum: { $cond:{ if: { $eq: [ "$Month",1 ] }, then:1, else:0 } }},
+             Fabruary:{ $sum: { $cond:{ if: { $eq: ["$Month",2 ] }, then:1, else:0 } }},
+             March:{ $sum: { $cond:{ if: { $eq: [ "$Month",3 ] }, then:1, else:0 } }},
+             April:{ $sum: { $cond:{ if: { $eq: [ "$Month",4 ] }, then:1, else:0 } }},
+             May:{ $sum: { $cond:{ if: { $eq: [ "$Month",5 ] }, then:1, else:0 } }},
+             June:{ $sum: { $cond:{ if: { $eq: [ "$Month",6 ] }, then:1, else:0 } }},
+             July:{ $sum: { $cond:{ if: { $eq: ["$Month",7 ] }, then:1, else:0 } }},
+             August:{ $sum: { $cond:{ if: { $eq: [ "$Month",8 ] }, then:1, else:0 } }},
+             Septemper:{ $sum: { $cond:{ if: { $eq: [ "$Month",9 ] }, then:1, else:0 } }},
+             October:{ $sum: { $cond:{ if: { $eq: [ "$Month",10 ] }, then:1, else:0 } }},
+             November:{ $sum: { $cond:{ if: { $eq: [ "$Month",11 ] }, then:1, else:0 } }},
+             December:{ $sum: { $cond:{ if: { $eq: [ "$Month",12 ] }, then:1, else:0 } }},
+           }
+      },
+      { $project: {_id:0}}
+   ]
+)
