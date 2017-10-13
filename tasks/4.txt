@@ -3,3 +3,11 @@ Create a query to return:
 | Customer Id | Total number of Orders | % of all orders |
  
 order data by % - higher percent at the top.
+
+var totalCount = db.orders.count({});
+var percentOfAllOrders={$multiply: [{$divide:["$Total", totalCount]}, 100]}
+ db.orders.aggregate([
+     {$group: { _id: "$CustomerID","Total": {$sum: 1}}},
+     {$project: {_id: 0,"Customer Id": "$_id","Total number of Orders": "$Total","% of all orders":percentOfAllOrders }},
+     {$sort:{'% of all orders':-1}},
+ ])
