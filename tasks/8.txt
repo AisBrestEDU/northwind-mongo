@@ -12,22 +12,12 @@ db.categories.aggregate([
           foreignField: "CategoryID",
           as: "prdt"
         }
-    },   
-    {
-        $unwind: "$prdt"
-    },
-    {
-        $group: {
-            _id: "$CategoryName",
-            "TotalNumberOfProducts": {$sum: 1}
-            
-        }
-    },      
+    },        
     {
         $project: {
             _id: 0,
-            "CategoryName": "$_id",
-            "TotalNumberOfProducts": 1
+            "CategoryName": 1,
+            "TotalNumberOfProducts": {$size: "$prdt"}
         }
     }
 ])
