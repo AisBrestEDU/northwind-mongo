@@ -2,4 +2,4 @@ Create a SQL query to find those customers whose contact name containing the 1st
 
 | CustomerId | ContactName |
 
-db.getCollection('customers').find({CustomerID:/^F.{2}N/}, {CustomerID:1, ContactName:1, _id:0})
+db.getCollection('customers').find({CustomerID:/^F.{2}n/i}, {CustomerID:1, ContactName:1, _id:0})
