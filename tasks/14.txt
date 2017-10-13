@@ -1,3 +1,25 @@
 Create a SQL query to get Product list of stock is less than the quantity on order:
 
 | ProductName | UnitsInOrder| UnitsInStock |
+
+db.products.aggregate([
+    {
+        $project: 
+        {
+            _id: 0, 
+            ProductName: 1, 
+            UnitsOnOrder: 1, 
+            UnitsInStock: 1, 
+            isLess: {$lt: ["$UnitsInStock", "$UnitsOnOrder"]}
+        }
+    },
+    { $match: { isLess: true } },
+    {
+        $project: 
+        {
+            ProductName: 1, 
+            UnitsInOrder: "$UnitsOnOrder", 
+            UnitsInStock: "$UnitsInStock"
+        }
+    }
+]);
