@@ -2,4 +2,10 @@ Create a SQL query to get Product list of stock is less than the quantity on ord
 
 | ProductName | UnitsInOrder| UnitsInStock |
 
-db.getCollection('products').find({ $where:function(){ return this.UnitsInStock < this.UnitsOnOrder} })
+db.products.aggregate(
+    [
+       { $project: { ProdactName: 1, UnitsOnOrder: 1, UnitsInStock: 1, test: {$gt: ["$UnitsOnOrder", "$UnitsInStock"]}}},
+       { $match : { test: true }},
+       { $project: { test: 0, _id: 0 }}
+    ]
+ )
