@@ -2,10 +2,12 @@ Create a query to return all customers from USA without Fax:
 
 | CustomerId | CompanyName |
 
+db.customers.update({'Fax':'NULL'},{$set:{'Fax':null}},{multi:true})
+
 db.customers.aggregate(
     [ {
     $match : {
-    Country : "USA",Fax:"NULL"
+    Country : "USA",Fax:null
     }
     },
     {
