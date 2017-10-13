@@ -1,4 +1,56 @@
 Create a SQL query to display customer details whose total orders amount is more than 10000$:
 
 | CustomerId | CompanyName | TotalOrdersAmount, $ |
+____________________
 
+db.orders.aggregate([
+    {
+        $lookup: {
+          from: "order-details",
+          localField: "OrderID",
+          foreignField: "OrderID",
+          as: "ordDet"
+        }
+    }, 
+    {
+        $project: {
+            _id: 0,
+            "CustomerID": 1,
+            "TotalAmount": {
+                $reduce: {
+                    input: "$ordDet",
+                    initialValue: 0,
+                    in: {$add: ["$$value", {
+                            $subtract: [
+                                {$multiply: ["$$this.UnitPrice", "$$this.Quantity"]},
+                                {$multiply: ["$$this.Discount", {$multiply: ["$$this.UnitPrice", "$$this.Quantity"]}]},
+                            ]
+                        }
+                    ]}
+                }
+            }
+        }
+    },
+    {
+        $group: {
+            _id: "$CustomerID",
+            "TotalOrdersAmount, $": { $sum: "$TotalAmount" }
+        }
+    },
+    {
+        $lookup: {
+          from: "customers",
+          localField: "_id",
+          foreignField: "CustomerID",
+          as: "cust"
+        }
+    }, 
+    {
+        $project: {
+            _id: 0,
+            "CustomerId": "$_id",
+            "TotalOrdersAmount, $": 1,
+            "CompanyName": {$arrayElemAt: ["$cust.CompanyName", 0]}
+        }
+    }
+])
