@@ -1,3 +1,59 @@
 Create a SQL query to find the employee that sold products for the largest amount:
 
 | EmployeeId | Employee Full Name | Amount, $ |
+________________________________
+
+db.orders.aggregate([
+    {
+        $lookup: {
+          from: "order-details",
+          localField: "OrderID",
+          foreignField: "OrderID",
+          as: "ordDet"
+        }
+    }, 
+    {
+        $project: {
+            _id: 0,
+            "EmployeeID": 1,
+            "TotalAmount": {
+                $reduce: {
+                    input: "$ordDet",
+                    initialValue: 0,
+                    in: {$add: ["$$value", {
+                            $subtract: [
+                                {$multiply: ["$$this.UnitPrice", "$$this.Quantity"]},
+                                {$multiply: ["$$this.Discount", {$multiply: ["$$this.UnitPrice", "$$this.Quantity"]}]},
+                            ]
+                        }
+                    ]}
+                }
+            }
+        }
+    },
+    {
+        $group: {
+            _id: "$EmployeeID",
+            "Amount, $": { $sum: "$TotalAmount" }
+        }
+    },
+    {
+        $lookup: {
+          from: "employees",
+          localField: "_id",
+          foreignField: "EmployeeID",
+          as: "empl"
+        }
+    }, 
+    {
+        $unwind: "$empl"
+    },
+    {
+        $project: {
+            _id: 0,
+            "EmployeeID": "$_id",
+            "Employee Full Name": {$concat: ["$empl.TitleOfCourtesy", "$empl.FirstName", " ", "$empl.LastName"]},
+            "Amount, $": 1
+        }
+    }
+])
