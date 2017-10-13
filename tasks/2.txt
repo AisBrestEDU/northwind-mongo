@@ -3,3 +3,29 @@ https://docs.mongodb.com/manual/reference/operator/aggregation/sort/
 Create a query to return a list ordered by order id descending:
 
 | Order Id | Order Total Price | Total Order Discount, % |
+
+db.getCollection('order-details').aggregate([
+    { $sort: { _id: -1 } },
+    { 
+        $group: 
+        { 
+            _id: "$OrderID",
+            OrderTotalPrice: { $sum: {$multiply: [ "$Quantity", "$UnitPrice" ] } } 
+        }
+    },
+    {
+        $project: 
+        {
+            _id: 1,
+            OrderTotalPrice: 1,
+            TotalOrderDiscount: 
+            { 
+                $divide: 
+                [ 
+                    { $multiply: [100, { $sum: {$multiply: [ "$Quantity", "$Discount" ] } } ] },
+                    "$OrderTotalPrice"
+                ]
+            }
+        }
+    }
+])
