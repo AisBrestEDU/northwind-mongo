@@ -12,7 +12,5 @@ db.categories.aggregate([
           as: "inventory_docs"
         }
    },
-   {$unwind:"$inventory_docs"},
-   {$group:{_id:'$CategoryName','TotalNumberOfProducts':{$sum:1}}},
-   {$project:{_id:0,'CategoryName':'$_id','TotalNumberOfProducts':'$TotalNumberOfProducts'}}
+   {$project:{_id:0,'CategoryName':1,'TotalNumberOfProducts':{ $size: "$inventory_docs" }}}
 ])
