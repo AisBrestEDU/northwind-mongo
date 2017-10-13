@@ -24,7 +24,6 @@ db.orders.aggregate([
     {
         $project: {
             "Month": "$_id",
-//             "sum": {$substr: ["$sum", 0, -1]}
             "sum": 1
         }
     },
