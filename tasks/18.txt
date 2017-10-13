@@ -13,3 +13,22 @@ db.orders.aggregate([
      { $group: { _id: "$OrderDate" , TotalNumberOfOrders : { $sum: 1 } } }
  ])
 
+
+
+
+//task18(2)
+db.orders.aggregate([
+{
+    $project: {
+      Year:  {"$year": "$OrderDate"} , 
+      Month : {"$month": "$OrderDate"},
+      Day: {"$dayOfMonth": "$OrderDate"},
+  }
+ },
+     { $match: {Year: 1998 }},
+     { $group: { _id: {Month: "$Month", Day: "$Day"} , TotalNumberOfOrders : { $sum: 1 } } },     
+     { $sort: {_id:1}},
+     { $project: {
+      TotalNumberOfOrders:1}
+  }
+ ])
