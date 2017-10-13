@@ -8,5 +8,12 @@ db.customers.aggregate([
         $match: {
             "ContactName": {$regex: /^F..n/}
         }
+    },
+    {
+        $project: {
+            _id: 0,
+            "CustomerID": 1,
+            "ContactName": 1
+        }
     }
 ])
