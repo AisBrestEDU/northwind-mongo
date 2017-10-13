@@ -6,7 +6,7 @@ _________________
 db.customers.aggregate([
     {
         $match: {
-            Fax: "NULL"
+            Fax: null
         }
     },
     {
