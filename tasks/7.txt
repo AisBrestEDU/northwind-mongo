@@ -14,5 +14,5 @@ db.employees.aggregate([
            as: "ReportsToQ"		
          }},		
              {$unwind: {path: "$ReportsToQ", preserveNullAndEmptyArrays: true}},		
-     {$project: {EmployeeID: 1, FullName: { $concat: [ "$FirstName", " ", "$LastName" ]}, ReportsTo: { $ifNull: [ {$concat: ["$ReportsToQ.FirstName"," ", "$ReportsToQ.LastName"]}, "-" ]}}}		
+     {$project: {EmployeeID: 1, FullName: { $concat: [{ $ifNull: ["$FirstName", ""]}, " ", { $ifNull: ["$LastName", ""]}]}, ReportsTo: { $ifNull: [ {$concat: ["$ReportsToQ.FirstName"," ", "$ReportsToQ.LastName"]}, "-" ]}}}		
      ]);
