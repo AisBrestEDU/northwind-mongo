@@ -10,7 +10,5 @@ db.categories.aggregate([
           foreignField: "CategoryID",
           as: "Products"
         }},
-        {$unwind: "$Products"},
-        {$group: {_id: "$CategoryName", TotalNumberOfProducts: {$sum: 1}}},
-        {$project: {_id: 0, CategoryName: "$_id", TotalNumberOfProducts: "$TotalNumberOfProducts"}}
+        {$project: {_id: 0, CategoryName: 1, TotalNumberOfProducts: {$size: "$Products"}}}
     ]);
