@@ -5,12 +5,3 @@ __________________
 
 var a = db.products.find({Discontinued: 1}).count();
 var b = db.products.find({Discontinued: 0}).count();
-db.products.aggregate([
-    {
-        $project: {
-            _id: 0,
-            "TotalOfCurrentProducts": {$sum: [a, 0]},
-            "TotalOfDiscontinuedProducts": {$sum: [b, 0]},
-        } 
-    }
-])
