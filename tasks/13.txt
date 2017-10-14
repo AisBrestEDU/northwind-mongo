@@ -2,18 +2,6 @@ Create a SQL query to count current and discontinued products:
 
 | TotalOfCurrentProducts | TotalOfDiscontinuedProducts |
 
-var totalCountProd_Disc_0= db.getCollection('products').find({Discontinued:{$eq:0}}).count();
-var totalCountProd_Disc_1 = db.getCollection('products').find({Discontinued:{$eq:1}}).count();
+var totalCountProd_Disc_0= db.products.count({Discontinued:0});
+var totalCountProd_Disc_1 = db.products.count({Discontinued:1});
 
-db.products.aggregate([
-    { "$group": {
-        _id: null,
-        "TotalOfCurrentProducts": {
-            $avg:totalCountProd_Disc_0
-        },
-        "TotalOfDiscontinuedProducts": {
-             $avg:totalCountProd_Disc_1
-        }
-    }},
-    {$project:{_id:0}}
-])
