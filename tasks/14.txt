@@ -1,3 +1,10 @@
 Create a SQL query to get Product list of stock is less than the quantity on order:
 
 | ProductName | UnitsInOrder| UnitsInStock |
+
+var bool={ "$gt": [ "$UnitsOnOrder", "$UnitsInStock" ] };
+db.products.aggregate([
+    {$project:{_id:0, "ProductName":1,"UnitsOnOrder":1,"UnitsInStock":1,"_":bool}},
+    {$match: {"_":true}},
+    {$project:{"_":0}}
+])
