@@ -7,7 +7,7 @@ Write a SQL statement to get the maximum purchase amount of all the orders.
     { $group:
           {
             _id: { OrderID: "$OrderID"}, 
-            Amount: {$max: { $sum : { $multiply: [ "$UnitPrice", "$Quantity" ] } }}
+            Amount: { $sum : { $multiply: [ "$UnitPrice", "$Quantity" ] }}
           }
       },
      { $sort: { Amount: -1}},
