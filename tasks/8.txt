@@ -1,3 +1,18 @@
 Create a query to return:
 
 | CategoryName | TotalNumberOfProducts |
+
+
+//task8
+db.categories.aggregate([
+           {
+        $lookup:
+          {
+            from: "products",
+            localField: "CategoryID",
+            foreignField: "CategoryID",
+            as: "products_obj"
+          }        
+      },
+{$project: {_id: 0, CategoryName: 1, TotalNumberOfProducts: {$size: "$products_obj"}}}      
+])
