@@ -6,6 +6,8 @@ Full Name - title of courtesy with full name.
 Order data by first column.
 Reports To - Full name. If the employee does not report to anybody leave "-" in the column.
 
+db.employees.update({'FirstName':"NULL"},{$set:{'FirstName':null}},{multi:true})
+
 db.employees.aggregate([
     {$lookup: {
             from: "employees",
@@ -16,13 +18,12 @@ db.employees.aggregate([
     },
     {$project:{
         _id:0,"EmployeeID":1,
-        "FullName":{$concat:["$TitleOfCourtesy"," ","$FirstName"," ","$LastName"]},
+         "FullName":{$concat:["$TitleOfCourtesy",{$ifNull:["$FirstName",""]}," ","$LastName"]},
          "Reports To":
          {$ifNull:[
          {$concat: [
          {$arrayElemAt: ["$inventory_docs.TitleOfCourtesy", 0]},
-         " ",
-         {$arrayElemAt: ["$inventory_docs.FirstName", 0]},
+         {$ifNull:[{$arrayElemAt: ["$inventory_docs.FirstName", 0]},""]},
          " ",
          {$arrayElemAt: ["$inventory_docs.LastName", 0]}]},
          "-"]}
