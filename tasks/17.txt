@@ -1,3 +1,19 @@
 Create SQL query to display the average price of each categories's products:
 
 | CategoryName | AvgPrice |
+
+db.products.aggregate([
+   {$group: { _id: "$CategoryID","Avg": {$avg: "$UnitPrice"}}},
+   {
+      $lookup:
+        {
+          from: "categories",
+          localField: "_id",
+          foreignField: "CategoryID",
+          as: "cat"
+        }
+   },
+   {$unwind:"$cat"},
+
+   {$project:{"_id":0,"CategoryName":"$cat.CategoryName","AvgPrice":"$Avg"}}
+    ])
