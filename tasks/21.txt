@@ -1,3 +1,20 @@
 Write a SQL statement to get the maximum purchase amount of all the orders.
 
 | Order Id | Maximum Purchase Amount, $ |
+
+db.orders.aggregate([
+     {
+      $lookup:
+        {
+          from: "order-details",
+          localField: "OrderID",
+          foreignField: "OrderID",
+          as: "ord_det"
+        }
+   },
+   {$unwind:"$ord_det"},
+   {$group: { _id: "$OrderID","MPA": {$sum:{$multiply:["$ord_det.UnitPrice","$ord_det.Quantity"]}}}},
+   {$sort:{"MPA":-1}},
+   {$project:{"_id":0,"OrderID":"$_id","Maximum Purchase Amount, $":"$MPA"}},
+   {$limit:1}
+    ])
