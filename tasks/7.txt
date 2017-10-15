@@ -5,3 +5,27 @@ Create a query to return all employees and full name of person to whom this empl
 Full Name - title of courtesy with full name.
 Order data by first column.
 Reports To - Full name. If the employee does not report to anybody leave "-" in the column.
+
+db.employees.update({'FirstName':"NULL"},{$set:{'FirstName':null}},{multi:true})
+
+db.employees.aggregate([
+    {$lookup: {
+            from: "employees",
+            localField: "ReportsTo",
+            foreignField: "EmployeeID",
+            as: "inventory_docs"
+        }
+    },
+    {$project:{
+        _id:0,"EmployeeID":1,
+         "FullName":{$concat:["$TitleOfCourtesy",{$ifNull:["$FirstName",""]}," ","$LastName"]},
+         "Reports To":
+         {$ifNull:[
+         {$concat: [
+         {$arrayElemAt: ["$inventory_docs.TitleOfCourtesy", 0]},
+         {$ifNull:[{$arrayElemAt: ["$inventory_docs.FirstName", 0]},""]},
+         " ",
+         {$arrayElemAt: ["$inventory_docs.LastName", 0]}]},
+         "-"]}
+        }}
+])
