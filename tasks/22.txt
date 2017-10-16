@@ -9,31 +9,31 @@ db.customers.aggregate([
           from: "orders",
           localField: "CustomerID",
           foreignField: "CustomerID",
-          as: "cust_docs"
+          as: "orders_docs"
         }
    },
-   {$unwind:"$cust_docs"},
+   {$unwind:"$orders_docs"},
 
    {
       $lookup:
         {
           from: "order-details",
-          localField: "cust_docs.OrderID",
+          localField: "orders_docs.OrderID",
           foreignField: "OrderID",
           as: "ord_det_docs"
         }
    },
    {$unwind:"$ord_det_docs"},
-   {$group: { _id: {"PID":"$ord_det_docs.ProductID","CN":"$CompanyName"},"MUP": {$max:"$ord_det_docs.UnitPrice"}}},
    {
       $lookup:
         {
           from: "products",
-          localField: "_id.PID",
+          localField: "ord_det_docs.ProductID",
           foreignField: "ProductID",
           as: "prod_docs"
         }
    },
    {$unwind:"$prod_docs"},
-   {$project:{"_id":0,"CompanyName":"$_id.CN","ProductName":"$prod_docs.ProductName","PricePerItem":"$MUP"}}
+   {$group: { _id: {"CN":"$CompanyName"},"MUP":{$max:"$ord_det_docs.UnitPrice"},"PN":{$first:"$prod_docs.ProductName"}}},
+   {$project:{"_id":0,"CompanyName":"$_id.CN","ProductName":"$PN","PricePerItem":"$MUP"}}
 ])
