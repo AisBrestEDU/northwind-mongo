@@ -11,16 +11,7 @@ db.orders.aggregate([
             as: "order-details"
         }
     },
-    { $unwind: "$order-details" },
-    {
-        $lookup: {
-            from: "products",
-            localField: "order-details.ProductID",
-            foreignField: "ProductID",
-            as: "products"
-        }
-    },
-    { $unwind: "$products" },
+    { $unwind: "$order-details" }, 
     {
         $lookup: {
             from: "employees",
