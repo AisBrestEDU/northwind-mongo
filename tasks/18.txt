@@ -5,19 +5,16 @@ ______________
 
 db.orders.aggregate([
     {
-        $project: {
-            "Day": {$dayOfYear: "$OrderDate"},
-            "Year": {$year: "$OrderDate"}
-        }
-    },
-    {
         $match: {
-            "Year": 1998
+            "OrderDate": {
+                $gte: new Date("1998-01-01T00:00:00.000Z"),
+                $lte: new Date("1998-12-31T00:00:00.000Z"),
+            }
         }
     },
     {
         $group: {
-            _id: "$Day",
+            _id: "$OrderDate",
             "Total Number of Orders": {$sum: 1}
         }
     },
