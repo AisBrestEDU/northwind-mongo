@@ -26,12 +26,10 @@ Create a SQL query to find the employee that sold products for the largest amoun
        { $group:
          {
            _id: { EmployeeID: "$EmployeeID", FullName: { $concat: ["$FirstName", " ", "$LastName"] } }, 
-           Count: { $sum: { $multiply: [ "$order_details_obj.UnitPrice", "$order_details_obj.Quantity" ] } },
-           Discount: { $sum:  "$order_details_obj.Discount"  }
-           
+           Amount: { $sum: { $subtract: [{ $multiply: [ "$order_details_obj.UnitPrice", "$order_details_obj.Quantity" ] }, "$order_details_obj.Discount"] }} 
         }
      },
-        { $sort: { Count: -1}},
-        { $limit: 1} ,
-     { $project: {_id:1, Amount: { $subtract: ["$Count", "$Discount"]}}}   
+        { $sort: { Amount: -1}},
+        { $limit: 1}
+ 
  ])
