@@ -12,8 +12,6 @@ db.customers.aggregate([
           as: "orders_docs"
         }
    },
-   {$unwind:"$orders_docs"},
-
    {
       $lookup:
         {
@@ -33,7 +31,7 @@ db.customers.aggregate([
           as: "prod_docs"
         }
    },
-   {$unwind:"$prod_docs"},
    {$group: { _id: {"CN":"$CompanyName"},"MUP":{$max:"$ord_det_docs.UnitPrice"},"PN":{$first:"$prod_docs.ProductName"}}},
-   {$project:{"_id":0,"CompanyName":"$_id.CN","ProductName":"$PN","PricePerItem":"$MUP"}}
+   {$project:{"_id":0,"CompanyName":"$_id.CN","ProductName":{$arrayElemAt:["$PN",0]},"PricePerItem":"$MUP"}},
+   {$sort:{PricePerItem:-1}}
 ])
