@@ -13,12 +13,12 @@ db.categories.aggregate([
             as: "categories_docs"
         }
     },
-    { $unwind: "$categories_docs" },
     {
-        $group:
+        $project: 
         {
-            _id: "$CategoryName",
-            count: { $sum: 1 }
+            _id: 0, 
+            CategoryName: 1, 
+            TotalNumberOfProducts: { $size: "$categories_docs" } 
         }
-    }
+    } 
 ])
