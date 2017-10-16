@@ -1,3 +1,44 @@
 Create a SQL query to display the name of each customer along with their most expensive purchased product:
 
 | CompanyName | ProductName | PricePerItem |
+
+//task22
+db.customers.aggregate([
+    { $lookup:
+         {
+           from: "orders",
+           localField: "CustomerID",
+           foreignField: "CustomerID",
+           as: "orders_obj"
+         }        
+     }, 
+        
+     { $lookup:
+         {
+           from: "order-details",
+           localField: "orders_obj.OrderID",
+           foreignField: "OrderID",
+           as: "order_details_obj"
+         }        
+     },  
+
+
+     { $lookup:
+         {
+           from: "products",
+           localField: "order_details_obj.ProductID",
+           foreignField: "ProductID",
+           as: "products_obj"
+         }        
+     },
+     { $unwind : "$products_obj" },
+
+      { $group:
+      { _id: {CompanyName: "$CompanyName",
+              ProductName: "$products_obj.ProductName"},
+              MaxUnitPrice: { $max: "$products_obj.UnitPrice"}
+       }
+     },  
+     
+     { $sort: {MaxUnitPrice:-1}},
+ ])
