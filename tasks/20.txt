@@ -4,7 +4,6 @@ Create a SQL query to find the employee that sold products for the largest amoun
 
 //task20
  db.employees.aggregate([
-        { $limit : 1 },
         { $lookup:
            {
              from: "orders",
@@ -27,7 +26,12 @@ Create a SQL query to find the employee that sold products for the largest amoun
        { $group:
          {
            _id: { EmployeeID: "$EmployeeID", FullName: { $concat: ["$FirstName", " ", "$LastName"] } }, 
-           Amount: { $max: { $multiply: [ "$order_details_obj.UnitPrice", "$order_details_obj.Quantity" ] } }
-         }
-     }    
+           Count: { $sum: { $multiply: [ "$order_details_obj.UnitPrice", "$order_details_obj.Quantity" ] } },
+           Discount: { $sum:  "$order_details_obj.Discount"  }
+           
+        }
+     },
+        { $sort: { Count: -1}},
+        { $limit: 1} ,
+     { $project: {_id:1, Amount: { $subtract: ["$Count", "$Discount"]}}}   
  ])
