@@ -1,3 +1,13 @@
 Create a SQL query to count current and discontinued products:
 
 | TotalOfCurrentProducts | TotalOfDiscontinuedProducts |
+
+db.products.aggregate([
+    { 
+        "$group": 
+        {
+            _id: { "Discontinued": "$Discontinued"},
+            "Total": { $sum: 1 },
+        }
+    }
+])
