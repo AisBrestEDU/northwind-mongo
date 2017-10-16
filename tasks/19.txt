@@ -2,3 +2,37 @@ Create a SQL query to display customer details whose total orders amount is more
 
 | CustomerId | CompanyName | TotalOrdersAmount, $ |
 
+db.customers.aggregate([
+        {
+            $lookup: {
+                from: "orders",
+                localField: "CustomerID",
+                foreignField: "CustomerID",
+                as: "orders"
+            },
+        },
+        { $unwind: "$orders" },
+        {
+            $lookup: {
+                from: "order-details",
+                localField: "orders.OrderID",
+                foreignField: "OrderID",
+                as: "order-details"
+            }
+        },
+        { $unwind: "$order-details" },
+        {
+            $group: { 
+                _id: { CustomerID: "$CustomerID", CompanyName: "$CompanyName" },
+                "TotalOrdersAmount": { $sum: { $multiply: [ "$order-details.UnitPrice", "$order-details.Quantity" ] } }
+            } 
+        },
+        {
+            $project: {
+                _id: 0,
+                CustomerID: "$_id.CustomerID",
+                CompanyName: "$_id.CompanyName",
+                TotalOrdersAmount: "$TotalOrdersAmount"
+            }
+        }
+])
