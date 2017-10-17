@@ -6,6 +6,15 @@ Full Name - title of courtesy with full name.
 Order data by first column.
 Reports To - Full name. If the employee does not report to anybody leave "-" in the column.
 
+DB FIX:
+
+db.getCollection('employees').find({FirstName:"NULL"}).forEach(function(empl){
+    empl.FirstName = null
+    db.employees.save(empl)
+})
+
+QUERY:
+
 db.employees.aggregate([
     {
         $lookup: {
@@ -20,11 +29,11 @@ db.employees.aggregate([
         $project: {
             _id: 0,
             EmployeeID: 1,
-            FullName: { $concat:[ "$LastName", " ", "$FirstName" ] },
-            ReportTo: {
+            FullName: { $concat:[ {$ifNull: ["$LastName"," "] }, {$ifNull: ["$FirstName",""] }]},
+            ReportsTo: {
                 $cond:{
                     if: "$employees",
-                    then: { $concat:[ "$employees.LastName", " ", "$employees.FirstName" ] },
+                    then: { $concat:[ {$ifNull: ["$employees.LastName",""] }, " ", "$employees.FirstName" ] },
                     else: "-" 
                 }
             }
