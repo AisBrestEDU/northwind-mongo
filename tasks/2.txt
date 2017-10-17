@@ -7,14 +7,14 @@ Create a query to return a list ordered by order id descending:
 db.getCollection('order-details').ensureIndex({OrderID:-1})
 db.getCollection('order-details').aggregate(
     [{
-        $sort: {
-            OrderID: -1
-        }
-    },{
         $group: {
             _id: "$OrderID",
             "Order Total Price": { $sum: { $multiply: [ "$UnitPrice", "$Quantity"] } },
             "TotalOrderDiscount": { $avg: { $multiply: [ "$Discount", 100 ]} }
+        }
+    },{
+        $sort: {
+            _id: 1
         }
     },{
         $project: {
@@ -25,3 +25,4 @@ db.getCollection('order-details').aggregate(
         }
     }]
 )
+
