@@ -29,6 +29,12 @@ db.orders.aggregate([
             Amount: { $sum:{ $multiply:["$order-details.UnitPrice", "$order-details.Quantity"] } }
         }
     },
+    {
+        $sort: { "Amount, $": -1 }
+    },
+    {
+        $limit: 1
+    },
     { 
         $project: {
             _id:0,
@@ -36,11 +42,5 @@ db.orders.aggregate([
             "Employee Full Name": { $concat: ["$_id.FirstName", " ", "$_id.LastName"] },
             "Amount, $": "$Amount"
         }
-    },
-    {
-        $sort: { "Amount, $": -1 }
-    },
-    {
-        $limit: 1
     }
 ])
